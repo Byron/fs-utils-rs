@@ -33,7 +33,7 @@ mod destination_dir {
     }
     
     #[test]
-    fn it_can_work_with_the_empty_path() {
+    fn it_can_work_with_relative_paths() {
         assert_eq!(destination_dir("", "dest"), PathBuf::from("dest/fs-utils"));
     }
 }

@@ -1,13 +1,22 @@
+//! Utilities to help working with the file-system.
 use std::path::{Path, PathBuf};
 use std::io;
 use std::env::current_dir;
-use std::ffi::OsString;
+use std::fmt::Debug;
 
-pub fn destination_dir<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> PathBuf {
+/// Return the computed destination directory, given a source directory.
+pub fn destination_dir<P: AsRef<Path> + Debug>(source_dir: P, destination_dir: P) -> PathBuf {
+    let cwd = current_dir().unwrap();
+    let source_dir = source_dir.as_ref();
+    print!("{:?} -> {:?} ({:?})", source_dir, destination_dir, cwd);
     destination_dir.as_ref()
-        .join(source_dir.as_ref()
-            .file_name()
-            .unwrap_or(&current_dir().unwrap().file_name().unwrap()))
+        .join(if source_dir.is_relative() {
+            source_dir
+                .file_name()
+                .unwrap_or(&cwd.file_name().expect("to not be at the root"))
+        } else {
+            "ROOT".as_ref()
+        })
 }
 
 pub fn copy_directory(source_dir: &Path, destination_dir: &Path) -> Result<PathBuf, io::Error> {
