@@ -14,10 +14,10 @@ mod copy_directory {
     fn it_copies_the_content_of_the_entire_directory_recursively_and_respects_basic_permissions
                                                                                                 () {
         let dest = TempDir::new("dest").unwrap();
-        let source = &fixture_at("source-1");
+        let source = fixture_at("source-1");
         let dest_path = dest.path();
-        let copy_dest = destination_dir(source, dest.path());
-        assert_eq!(copy_directory(source, dest_path).unwrap(), copy_dest);
+        let copy_dest = destination_dir(source.as_ref(), dest.path());
+        assert_eq!(copy_directory(&source, dest_path).unwrap(), copy_dest);
     }
 }
 
