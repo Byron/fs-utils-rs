@@ -13,10 +13,9 @@ mod copy_directory {
     #[test]
     fn it_copies_the_content_of_the_entire_directory_recursively_and_respects_basic_permissions
                                                                                                 () {
-        let dest = TempDir::new("dest").unwrap();
-        let source = fixture_at("source-1");
-        let dest_path = dest.path();
-        let copy_dest = destination_dir(source.as_ref(), dest.path());
+        let (dest, source) = (TempDir::new("dest").unwrap(), fixture_at("source-1"));
+        let (dest_path, copy_dest) = (dest.path(), destination_dir(source.as_ref(), dest.path()));
+
         assert_eq!(copy_directory(&source, dest_path).unwrap(), copy_dest);
     }
 }
@@ -34,6 +33,18 @@ mod destination_dir {
     #[test]
     fn it_can_deal_with_the_root_directory() {
         assert_eq!(destination_dir("/", "dest"), PathBuf::from("dest/ROOT"))
+    }
+
+    #[test]
+    fn it_can_work_with_absolute_source_paths() {
+        assert_eq!(destination_dir("/hello/there", "dest"),
+                   PathBuf::from("dest/there"));
+    }
+
+    #[test]
+    fn it_can_work_with_absolute_destination_paths() {
+        assert_eq!(destination_dir("", "/hello/dest"),
+                   PathBuf::from("/hello/dest/fs-utils-rs"));
     }
 
     #[test]
