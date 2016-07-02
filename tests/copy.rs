@@ -1,22 +1,53 @@
 extern crate fs_utils;
 extern crate tempdir;
 
+mod utils {
+    use std::path::{Path, PathBuf};
+
+    pub fn fixture_at(name: &str) -> PathBuf {
+        Path::new(file!()).parent().map(|p| p.join("fixtures").join(name)).unwrap()
+    }
+}
+
 mod copy_directory {
     use tempdir::TempDir;
-    use std::path::{Path, PathBuf};
     use fs_utils::{destination_dir, copy_directory};
+    use std::path::PathBuf;
+    use super::utils::fixture_at;
+    use std::os::unix::fs::PermissionsExt;
 
-    fn fixture_at(name: &str) -> PathBuf {
-        Path::new(file!()).parent().map(|p| p.join("fixtures").join(name)).unwrap()
+    #[test]
+    fn it_does_not_overwrite_existing_destination_files() {
+        unimplemented!()
     }
 
     #[test]
-    fn it_copies_the_content_of_the_entire_directory_recursively_and_respects_basic_permissions
-                                                                                                () {
+    fn it_copies_the_content_of_the_entire_directory_recursively_and_with_permissions() {
         let (dest, source) = (TempDir::new("dest").unwrap(), fixture_at("source-1"));
         let (dest_path, copy_dest) = (dest.path(), destination_dir(source.as_ref(), dest.path()));
 
-        assert_eq!(copy_directory(&source, dest_path).unwrap(), copy_dest);
+        let copy_result = copy_directory(&source, dest_path).unwrap();
+        assert_eq!(copy_result, copy_dest);
+        assert!(copy_result.join("a").is_file());
+        assert!(copy_result.join("b").is_file());
+        assert!(copy_result.join("c").is_dir());
+        assert!(copy_result.join("c").join("a").is_file());
+        assert!(copy_result.join("c").join("b").is_file());
+        #[cfg(not(windows))]
+        fn os_specific(copy_result: &PathBuf) {
+            assert_eq!(copy_result.join("c")
+                                  .join("c")
+                                  .metadata()
+                                  .unwrap()
+                                  .permissions()
+                                  .mode() & 0o111,
+                       0o111);
+        }
+        #[cfg(windows)]
+        fn os_specific(copy_result: &PathBuf) {
+        }
+
+        os_specific(&copy_result)
     }
 }
 
