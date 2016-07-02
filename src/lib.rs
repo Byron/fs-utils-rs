@@ -33,6 +33,10 @@ quick_error!{
             display("Failed to read directory '{}'", p.display())
             context(p: SourceDirectory<'a>, err: io::Error) -> (p.0.to_path_buf(), err)
         }
+        DestinationDirectoryExists(p: PathBuf) {
+            description("Cannot copy directories into an existing destination directory")
+            display("Destination directory '{}' did already exist", p.display())
+        }
         Copy(src: PathBuf, dest: PathBuf, err: io::Error) {
             description("A file could not be copied to its destination")
             display("Failed to copy '{}' to '{}'", src.display(), dest.display())
@@ -51,6 +55,9 @@ pub fn destination_dir<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> Pat
 
 pub fn copy_directory(source_dir: &Path, destination_dir: &Path) -> Result<PathBuf, Error> {
     let dest = ::destination_dir(source_dir, destination_dir);
+    if dest.is_dir() {
+        return Err(Error::DestinationDirectoryExists(dest));
+    }
 
     // one possible implementation of walking a directory only visiting files
     fn visit_dirs(dir: &Path, dest: PathBuf) -> Result<(), Error> {

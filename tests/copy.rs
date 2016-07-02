@@ -12,13 +12,18 @@ mod utils {
 mod copy_directory {
     use tempdir::TempDir;
     use fs_utils::{destination_dir, copy_directory};
-    use std::path::PathBuf;
+    use std::path::{PathBuf, Path};
     use super::utils::fixture_at;
     use std::os::unix::fs::PermissionsExt;
+    use std::fs;
 
     #[test]
-    fn it_does_not_overwrite_existing_destination_files() {
-        unimplemented!()
+    fn it_does_not_overwrite_existing_destination_directories() {
+        let (dest, source) = (TempDir::new("dest").unwrap(), Path::new("."));
+        let existing_dest = destination_dir(&source, &dest.path());
+        fs::create_dir(&existing_dest).unwrap();
+
+        assert!(copy_directory(&source, &dest.path()).is_err());
     }
 
     #[test]
