@@ -1,0 +1,21 @@
+language: rust
+sudo: required
+os:
+  - linux
+  - osx
+rust:
+  - stable
+  - nightly
+before_script:
+  - pip install 'travis-cargo<0.2' --user  && export PATH=$HOME/Library/Python/2.7/bin:$HOME/.local/bin:$PATH
+script:
+  - travis-cargo build
+  - travis-cargo test
+  - travis-cargo doc
+after_success:
+  - "[[ $TRAVIS_OS_NAME = linux ]] && travis-cargo --only stable doc-upload"
+  - "[[ $TRAVIS_OS_NAME = linux ]] && travis-cargo --only stable coveralls"
+env:
+  global:
+    - TRAVIS_CARGO_NIGHTLY_FEATURE=""
+    - secure: Y31gQY41n3K6Aofj9LLmlKZujOYfU2uLJXVJfVNQh6qvTd0TORaP3TJtxfwAg4CMN9Zg6WpV71XsqE+Ph71ugwkJVjOIEYOOJuB1WJr/YncHIs8UwnMB+XxLUAf44NPPbCqDDuWYhcydlbfFPB9wPiXfR9rw+TCt2P5zksaYasN7nq+oLTK64+Jq1VLDPODPhDT0ljnaB2SaO4Gx5+4HiF2eS5AfmQbAC1IieyZKVcz14C4fXpB+mu+7Bxvg2UA65bhrwKMKeq7OXjyENB7SQbEUyGzB5ivPH1qzsYzQx2w7VI8hYO2+PR59ijRhx/PpcnxrQuKM/6Zi7cn0Ji1iCfCKQK/uDE5qhlRMyLAMxrN2nomCthVM0fnCRVmRmyoX4wZPZGVfWI21bkpeLG56rvj1sJ0QOqECWtZ3ZYVVBKrhouW25ppbu0AlliJ2K0esK9P2ADETq+vuSPvfrIZzsx0tSaKSPSeRVIvtqJ01EUvA9WhVJ7s4OMTQf6MIOOic6JSc4VLrXfywhdsnvffSVqvzzuip2Kr2BufgVqt9l/qoFVU4pOb4hMVU0vS7xy0lvN1JRwtBy9Qv69k8VbCSEAWiSsuopa5uCZxmsK4F57Lsr8I9kugO/2awx+RGnsw9qT18UKgfB4dDwwmwASyP3zW0FPGGKABJCj3nxVH8M4I=
