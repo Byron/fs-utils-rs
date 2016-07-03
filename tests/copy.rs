@@ -29,8 +29,7 @@ mod copy_directory {
     #[test]
     fn it_copies_the_content_of_the_entire_directory_recursively_and_with_permissions() {
         let (dest, source) = (TempDir::new("dest").unwrap(), fixture_at("source-1"));
-        let (dest_path, copy_dest) = (dest.path(),
-                                      destination_directory(source.as_ref(), dest.path()));
+        let (dest_path, copy_dest) = (dest.path(), destination_directory(&source, dest.path()));
 
         let copy_result = copy_directory(&source, dest_path).unwrap();
         assert_eq!(copy_result, copy_dest);
