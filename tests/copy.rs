@@ -11,7 +11,7 @@ mod utils {
 
 mod copy_directory {
     use tempdir::TempDir;
-    use fs_utils::{destination_dir, copy_directory};
+    use fs_utils::copy::{destination_dir, copy_directory};
     use std::path::{PathBuf, Path};
     use super::utils::fixture_at;
     use std::os::unix::fs::PermissionsExt;
@@ -41,23 +41,22 @@ mod copy_directory {
         #[cfg(not(windows))]
         fn os_specific(copy_result: &PathBuf) {
             assert_eq!(copy_result.join("c")
-                                  .join("c")
-                                  .metadata()
-                                  .unwrap()
-                                  .permissions()
-                                  .mode() & 0o111,
+                           .join("c")
+                           .metadata()
+                           .unwrap()
+                           .permissions()
+                           .mode() & 0o111,
                        0o111);
         }
         #[cfg(windows)]
-        fn os_specific(copy_result: &PathBuf) {
-        }
+        fn os_specific(copy_result: &PathBuf) {}
 
         os_specific(&copy_result)
     }
 }
 
 mod destination_dir {
-    use fs_utils::destination_dir;
+    use fs_utils::copy::destination_dir;
     use std::path::PathBuf;
     use std::env::current_dir;
 
@@ -81,27 +80,30 @@ mod destination_dir {
     #[test]
     fn it_can_work_with_absolute_destination_paths() {
         assert_eq!(destination_dir(".", "/hello/dest"),
-                   PathBuf::from("/hello/dest/fs-utils-rs"));
+                   PathBuf::from("/hello/dest").join(current_dir()
+                       .unwrap()
+                       .file_name()
+                       .unwrap()));
     }
 
     #[test]
     fn it_can_work_with_relative_paths_too() {
         assert_eq!(destination_dir("../", "dest"),
                    PathBuf::from("dest").join(current_dir()
-                                                  .unwrap()
-                                                  .join("..")
-                                                  .canonicalize()
-                                                  .unwrap()
-                                                  .file_name()
-                                                  .unwrap()));
+                       .unwrap()
+                       .join("..")
+                       .canonicalize()
+                       .unwrap()
+                       .file_name()
+                       .unwrap()));
     }
 
     #[test]
     fn it_can_work_with_relative_paths() {
         assert_eq!(destination_dir(".", "dest"),
                    PathBuf::from("dest").join(current_dir()
-                                                  .unwrap()
-                                                  .file_name()
-                                                  .unwrap()));
+                       .unwrap()
+                       .file_name()
+                       .unwrap()));
     }
 }

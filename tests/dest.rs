@@ -1,10 +1,10 @@
 extern crate fs_utils;
 
 mod destination_dir {
-    use fs_utils::destination_dir;
+    use fs_utils::copy::destination_dir;
     use std::path::PathBuf;
     use std::env::set_current_dir;
-    
+
     #[test]
     #[should_panic]
     /// Changes CWD, and thus needs its own file to be sandboxed
@@ -12,5 +12,5 @@ mod destination_dir {
         set_current_dir("/").unwrap();
         assert_eq!(destination_dir("", "dest"), PathBuf::from("dest/fs-utils"));
     }
-    
+
 }
