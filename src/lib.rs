@@ -22,16 +22,19 @@ quick_error!{
             description("A directory could not be created")
             display("Failed to create directory '{}'", p.display())
             context(p: CreateDirectory<'a>, err: io::Error) -> (p.0.to_path_buf(), err)
+            cause(err)
         }
         ObtainEntry(p: PathBuf, err: io::Error) {
             description("A directory entry could not be obtained")
             display("Failed to read directory entry of '{}'", p.display())
             context(p: ObtainEntryIn<'a>, err: io::Error) -> (p.0.to_path_buf(), err)
+            cause(err)
         }
         ReadDirectory(p: PathBuf, err: io::Error) {
             description("A directory could not be read to obtain its entries")
             display("Failed to read directory '{}'", p.display())
             context(p: SourceDirectory<'a>, err: io::Error) -> (p.0.to_path_buf(), err)
+            cause(err)
         }
         DestinationDirectoryExists(p: PathBuf) {
             description("Cannot copy directories into an existing destination directory")
@@ -41,6 +44,7 @@ quick_error!{
             description("A file could not be copied to its destination")
             display("Failed to copy '{}' to '{}'", src.display(), dest.display())
             context(c: (&'a PathBuf, &'a PathBuf), err: io::Error) -> (c.0.clone(), c.1.clone(), err)
+            cause(err)
         }
     }
 }
