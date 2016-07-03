@@ -47,7 +47,7 @@ quick_error!{
 }
 
 /// Return the computed destination directory, given a source directory.
-pub fn destination_dir<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> PathBuf {
+pub fn destination_directory<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> PathBuf {
     let source_dir = source_dir.as_ref()
         .canonicalize()
         .unwrap_or_else(|_| source_dir.as_ref().to_path_buf());
@@ -58,7 +58,7 @@ pub fn destination_dir<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> Pat
 /// In `destination_dir`, a new subdirectory with the basename of the `source_dir` will be created.
 /// It will not perform the copy operation if the effective destination directory does already exist.
 pub fn copy_directory(source_dir: &Path, destination_dir: &Path) -> Result<PathBuf, Error> {
-    let dest = self::destination_dir(source_dir, destination_dir);
+    let dest = destination_directory(source_dir, destination_dir);
     if dest.is_dir() {
         return Err(Error::DestinationDirectoryExists(dest));
     }
