@@ -1,0 +1,6 @@
+[clog]
+repository = "https://github.com/Byron/fs-utils-rs"
+from-latest-tag = true
+
+[sections]
+Improvements = ["imp"]
