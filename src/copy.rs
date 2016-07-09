@@ -4,17 +4,15 @@ use std::io;
 use std::fs;
 use quick_error::ResultExt;
 
-
 struct SourceDirectory<'a>(&'a Path);
+
 struct ObtainEntryIn<'a>(&'a Path);
+
 struct CreateDirectory<'a>(&'a Path);
 
 quick_error!{
     #[derive(Debug)]
     pub enum Error {
-        Io(err: io::Error) {
-            from()
-        }
         CreateDirectory(p: PathBuf, err: io::Error) {
             description("A directory could not be created")
             display("Failed to create directory '{}'", p.display())
@@ -52,8 +50,8 @@ pub fn destination_directory<P, O>(source_dir: P, destination_dir: O) -> PathBuf
           O: AsRef<Path>
 {
     let source_dir = source_dir.as_ref()
-        .canonicalize()
-        .unwrap_or_else(|_| source_dir.as_ref().to_path_buf());
+                               .canonicalize()
+                               .unwrap_or_else(|_| source_dir.as_ref().to_path_buf());
     destination_dir.as_ref().join(source_dir.file_name().unwrap_or("ROOT".as_ref()))
 }
 
@@ -77,11 +75,11 @@ pub fn copy_directory<P, O>(source_dir: P, destination_dir: O) -> Result<PathBuf
                 if path.is_dir() {
                     try!(visit_dirs(&path,
                                     dest.join(path.file_name()
-                                        .expect("should always have filename here"))));
+                                                  .expect("should always have filename here"))));
                 } else {
                     try!(fs::create_dir_all(&dest).context(CreateDirectory(&dest)));
                     let dest = dest.join(&path.file_name()
-                        .expect("should have filename here"));
+                                              .expect("should have filename here"));
                     try!(fs::copy(&path, &dest).context((&path, &dest)));
                 }
             }
