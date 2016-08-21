@@ -20,7 +20,7 @@ mod copy_directory {
     #[test]
     fn it_does_not_overwrite_existing_destination_directories() {
         let (dest, source) = (TempDir::new("dest").unwrap(), Path::new("."));
-        let existing_dest = destination_directory(&source, &dest.path());
+        let existing_dest = destination_directory(&source, &dest.path()).unwrap();
         fs::create_dir(&existing_dest).unwrap();
 
         assert!(copy_directory(&source, &dest.path()).is_err());
@@ -29,7 +29,8 @@ mod copy_directory {
     #[test]
     fn it_copies_the_content_of_the_entire_directory_recursively_and_with_permissions() {
         let (dest, source) = (TempDir::new("dest").unwrap(), fixture_at("source-1"));
-        let (dest_path, copy_dest) = (dest.path(), destination_directory(&source, dest.path()));
+        let (dest_path, copy_dest) = (dest.path(),
+                                      destination_directory(&source, dest.path()).unwrap());
 
         let copy_result = copy_directory(&source, dest_path).unwrap();
         assert_eq!(copy_result, copy_dest);
@@ -62,25 +63,25 @@ mod destination_directory {
 
     #[test]
     fn it_always_appends_the_filename_to_destination() {
-        assert_eq!(destination_directory("source/subdir", "dest"),
+        assert_eq!(destination_directory("source/subdir", "dest").unwrap(),
                    PathBuf::from("dest/subdir"));
     }
 
     #[test]
     fn it_can_deal_with_the_root_directory() {
-        assert_eq!(destination_directory("/", "dest"),
+        assert_eq!(destination_directory("/", "dest").unwrap(),
                    PathBuf::from("dest/ROOT"))
     }
 
     #[test]
     fn it_can_work_with_absolute_source_paths() {
-        assert_eq!(destination_directory("/hello/there", "dest"),
+        assert_eq!(destination_directory("/hello/there", "dest").unwrap(),
                    PathBuf::from("dest/there"));
     }
 
     #[test]
     fn it_can_work_with_absolute_destination_paths() {
-        assert_eq!(destination_directory(".", "/hello/dest"),
+        assert_eq!(destination_directory(".", "/hello/dest").unwrap(),
                    PathBuf::from("/hello/dest").join(current_dir()
                        .unwrap()
                        .file_name()
@@ -89,7 +90,7 @@ mod destination_directory {
 
     #[test]
     fn it_can_work_with_relative_paths_too() {
-        assert_eq!(destination_directory("../", "dest"),
+        assert_eq!(destination_directory("../", "dest").unwrap(),
                    PathBuf::from("dest").join(current_dir()
                        .unwrap()
                        .join("..")
@@ -101,7 +102,7 @@ mod destination_directory {
 
     #[test]
     fn it_can_work_with_relative_paths() {
-        assert_eq!(destination_directory(".", "dest"),
+        assert_eq!(destination_directory(".", "dest").unwrap(),
                    PathBuf::from("dest").join(current_dir()
                        .unwrap()
                        .file_name()
