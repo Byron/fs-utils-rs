@@ -58,6 +58,8 @@ pub fn destination_directory<P, O>(source_dir: P, destination_dir: O) -> PathBuf
 /// Copies the contents of the source directory to the given destination directory.
 /// In `destination_dir`, a new subdirectory with the basename of the `source_dir` will be created.
 /// It will not perform the copy operation if the effective destination directory does already exist.
+///
+/// The returned value will contain a copied directory's path.
 pub fn copy_directory<P, O>(source_dir: P, destination_dir: O) -> Result<PathBuf, Error>
     where P: AsRef<Path>,
           O: AsRef<Path>
