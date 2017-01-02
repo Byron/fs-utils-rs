@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Byron/fs-utils-rs/badge.svg?branch=master)](https://coveralls.io/github/Byron/fs-utils-rs?branch=master)
 
 A bunch of utilities to help working with the file-system.
-[Click here](https://byron.github.io/fs-utils-rs/fs_utils/index.html) for the API-docs.
+[Click here](https://docs.rs/fs-utils) for the API-docs.
 
 # Installation
 
