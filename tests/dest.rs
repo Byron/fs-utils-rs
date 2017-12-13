@@ -10,8 +10,10 @@ mod destination_directory {
     /// Changes CWD, and thus needs its own file to be sandboxed
     fn it_can_work_with_relative_paths_but_not_if_that_is_root_as_well() {
         set_current_dir("/").unwrap();
-        assert_eq!(destination_directory("", "dest"),
-                   PathBuf::from("dest/fs-utils"));
+        assert_eq!(
+            destination_directory("", "dest"),
+            PathBuf::from("dest/fs-utils")
+        );
     }
 
 }

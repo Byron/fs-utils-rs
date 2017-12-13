@@ -5,14 +5,17 @@ mod utils {
     use std::path::{Path, PathBuf};
 
     pub fn fixture_at(name: &str) -> PathBuf {
-        Path::new(file!()).parent().map(|p| p.join("fixtures").join(name)).unwrap()
+        Path::new(file!())
+            .parent()
+            .map(|p| p.join("fixtures").join(name))
+            .unwrap()
     }
 }
 
 mod copy_directory {
     use tempdir::TempDir;
-    use fs_utils::copy::{destination_directory, copy_directory};
-    use std::path::{PathBuf, Path};
+    use fs_utils::copy::{copy_directory, destination_directory};
+    use std::path::{Path, PathBuf};
     use super::utils::fixture_at;
     use std::os::unix::fs::PermissionsExt;
     use std::fs;
@@ -40,13 +43,16 @@ mod copy_directory {
         assert!(copy_result.join("c").join("b").is_file());
         #[cfg(not(windows))]
         fn os_specific(copy_result: &PathBuf) {
-            assert_eq!(copy_result.join("c")
-                           .join("c")
-                           .metadata()
-                           .unwrap()
-                           .permissions()
-                           .mode() & 0o111,
-                       0o111);
+            assert_eq!(
+                copy_result
+                    .join("c")
+                    .join("c")
+                    .metadata()
+                    .unwrap()
+                    .permissions()
+                    .mode() & 0o111,
+                0o111
+            );
         }
         #[cfg(windows)]
         fn os_specific(copy_result: &PathBuf) {}
@@ -62,49 +68,57 @@ mod destination_directory {
 
     #[test]
     fn it_always_appends_the_filename_to_destination() {
-        assert_eq!(destination_directory("source/subdir", "dest"),
-                   PathBuf::from("dest/subdir"));
+        assert_eq!(
+            destination_directory("source/subdir", "dest"),
+            PathBuf::from("dest/subdir")
+        );
     }
 
     #[test]
     fn it_can_deal_with_the_root_directory() {
-        assert_eq!(destination_directory("/", "dest"),
-                   PathBuf::from("dest/ROOT"))
+        assert_eq!(
+            destination_directory("/", "dest"),
+            PathBuf::from("dest/ROOT")
+        )
     }
 
     #[test]
     fn it_can_work_with_absolute_source_paths() {
-        assert_eq!(destination_directory("/hello/there", "dest"),
-                   PathBuf::from("dest/there"));
+        assert_eq!(
+            destination_directory("/hello/there", "dest"),
+            PathBuf::from("dest/there")
+        );
     }
 
     #[test]
     fn it_can_work_with_absolute_destination_paths() {
-        assert_eq!(destination_directory(".", "/hello/dest"),
-                   PathBuf::from("/hello/dest").join(current_dir()
-                       .unwrap()
-                       .file_name()
-                       .unwrap()));
+        assert_eq!(
+            destination_directory(".", "/hello/dest"),
+            PathBuf::from("/hello/dest").join(current_dir().unwrap().file_name().unwrap())
+        );
     }
 
     #[test]
     fn it_can_work_with_relative_paths_too() {
-        assert_eq!(destination_directory("../", "dest"),
-                   PathBuf::from("dest").join(current_dir()
-                       .unwrap()
-                       .join("..")
-                       .canonicalize()
-                       .unwrap()
-                       .file_name()
-                       .unwrap()));
+        assert_eq!(
+            destination_directory("../", "dest"),
+            PathBuf::from("dest").join(
+                current_dir()
+                    .unwrap()
+                    .join("..")
+                    .canonicalize()
+                    .unwrap()
+                    .file_name()
+                    .unwrap()
+            )
+        );
     }
 
     #[test]
     fn it_can_work_with_relative_paths() {
-        assert_eq!(destination_directory(".", "dest"),
-                   PathBuf::from("dest").join(current_dir()
-                       .unwrap()
-                       .file_name()
-                       .unwrap()));
+        assert_eq!(
+            destination_directory(".", "dest"),
+            PathBuf::from("dest").join(current_dir().unwrap().file_name().unwrap())
+        );
     }
 }
