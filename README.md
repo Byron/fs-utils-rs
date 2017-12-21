@@ -1,8 +1,9 @@
 [![Build Status](https://travis-ci.org/Byron/fs-utils-rs.svg?branch=master)](https://travis-ci.org/Byron/fs-utils-rs)
 [![Coverage Status](https://coveralls.io/repos/github/Byron/fs-utils-rs/badge.svg?branch=master)](https://coveralls.io/github/Byron/fs-utils-rs?branch=master)
+[![crates.io](https://img.shields.io/crates/v/fs-utils.svg)](https://crates.io/crates/fs-utils)
+![API docs](https://docs.rs/fs-utils/badge.svg)
 
 A bunch of utilities to help working with the file-system.
-[Click here](https://docs.rs/fs-utils) for the API-docs.
 
 # Installation
 
