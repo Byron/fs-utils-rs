@@ -56,7 +56,7 @@ where
         .unwrap_or_else(|_| source_dir.as_ref().to_path_buf());
     destination_dir
         .as_ref()
-        .join(source_dir.file_name().unwrap_or("ROOT".as_ref()))
+        .join(source_dir.file_name().unwrap_or_else(|| "ROOT".as_ref()))
 }
 
 /// Copies the contents of the source directory to the given destination directory.
@@ -75,14 +75,14 @@ where
     }
 
     // one possible implementation of walking a directory only visiting files
-    fn visit_dirs(dir: &Path, dest: PathBuf) -> Result<(), Error> {
+    fn visit_dirs(dir: &Path, dest: &Path) -> Result<(), Error> {
         if dir.is_dir() {
             for entry in try!(fs::read_dir(dir).context(SourceDirectory(dir))) {
                 let path = try!(entry.context(ObtainEntryIn(dir))).path();
                 if path.is_dir() {
                     try!(visit_dirs(
                         &path,
-                        dest.join(path.file_name().expect("should always have filename here"))
+                        &dest.join(path.file_name().expect("should always have filename here"))
                     ));
                 } else {
                     try!(fs::create_dir_all(&dest).context(CreateDirectory(&dest)));
@@ -93,5 +93,6 @@ where
         }
         Ok(())
     }
-    visit_dirs(source_dir.as_ref(), dest.clone()).map(|_| dest)
+    try!(visit_dirs(source_dir.as_ref(), &dest));
+    Ok(dest)
 }
