@@ -6,7 +6,16 @@ rust:
   - stable
   - nightly
 before_script:
-  - pip install 'travis-cargo<0.2' --user  && export PATH=$HOME/Library/Python/2.7/bin:$HOME/.local/bin:$PATH
+  - |
+    if [ $TRAVIS_OS_NAME = 'osx' ]; then
+      virtualenv env &&
+      source env/bin/activate &&
+      python --version &&
+      pip install 'travis-cargo<0.2'
+    else
+      pip install 'travis-cargo<0.2' --user &&
+      export PATH="$(python -m site --user-base)/bin:$PATH"
+    fi
 script:
   - travis-cargo build
   - travis-cargo test
