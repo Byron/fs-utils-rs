@@ -1,5 +1,5 @@
 extern crate fs_utils;
-extern crate tempdir;
+extern crate tempfile;
 
 mod utils {
     use std::path::{Path, PathBuf};
@@ -13,7 +13,7 @@ mod utils {
 }
 
 mod copy_directory {
-    use tempdir::TempDir;
+    use tempfile;
     use fs_utils::copy::{copy_directory, destination_directory};
     use std::path::{Path, PathBuf};
     use super::utils::fixture_at;
@@ -22,7 +22,8 @@ mod copy_directory {
 
     #[test]
     fn it_does_not_overwrite_existing_destination_directories() {
-        let (dest, source) = (TempDir::new("dest").unwrap(), Path::new("."));
+        let source = Path::new(".");
+        let dest = tempfile::Builder::new().prefix("dest").tempdir().unwrap();
         let existing_dest = destination_directory(&source, &dest.path());
         fs::create_dir(&existing_dest).unwrap();
 
@@ -31,7 +32,8 @@ mod copy_directory {
 
     #[test]
     fn it_copies_the_content_of_the_entire_directory_recursively_and_with_permissions() {
-        let (dest, source) = (TempDir::new("dest").unwrap(), fixture_at("source-1"));
+        let source = fixture_at("source-1");
+        let dest = tempfile::Builder::new().prefix("dest").tempdir().unwrap();
         let (dest_path, copy_dest) = (dest.path(), destination_directory(&source, dest.path()));
 
         let copy_result = copy_directory(&source, dest_path).unwrap();
