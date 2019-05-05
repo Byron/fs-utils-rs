@@ -76,19 +76,17 @@ where
 
     // one possible implementation of walking a directory only visiting files
     fn visit_dirs(dir: &Path, dest: &Path) -> Result<(), Error> {
-        if dir.is_dir() {
-            for entry in fs::read_dir(dir).context(SourceDirectory(dir))? {
-                let path = entry.context(ObtainEntryIn(dir))?.path();
-                if path.is_dir() {
-                    visit_dirs(
-                        &path,
-                        &dest.join(path.file_name().expect("should always have filename here"))
-                    )?;
-                } else {
-                    fs::create_dir_all(&dest).context(CreateDirectory(&dest))?;
-                    let dest = dest.join(&path.file_name().expect("should have filename here"));
-                    fs::copy(&path, &dest).context((&path, &dest))?;
-                }
+        for entry in fs::read_dir(dir).context(SourceDirectory(dir))? {
+            let path = entry.context(ObtainEntryIn(dir))?.path();
+            if path.is_dir() {
+                visit_dirs(
+                    &path,
+                    &dest.join(path.file_name().expect("should always have filename here"))
+                )?;
+            } else {
+                fs::create_dir_all(&dest).context(CreateDirectory(&dest))?;
+                let dest = dest.join(&path.file_name().expect("should have filename here"));
+                fs::copy(&path, &dest).context((&path, &dest))?;
             }
         }
         Ok(())

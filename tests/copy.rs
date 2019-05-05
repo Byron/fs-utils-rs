@@ -21,6 +21,14 @@ mod copy_directory {
     use std::fs;
 
     #[test]
+    fn it_returns_error_on_non_existing_source_directory() {
+        let source = Path::new("./non-existing-directory");
+        let dest = tempfile::Builder::new().prefix("dest").tempdir().unwrap();
+
+        assert!(copy_directory(&source, &dest.path()).is_err());
+    }
+
+    #[test]
     fn it_does_not_overwrite_existing_destination_directories() {
         let source = Path::new(".");
         let dest = tempfile::Builder::new().prefix("dest").tempdir().unwrap();
