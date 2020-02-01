@@ -13,12 +13,12 @@ mod utils {
 }
 
 mod copy_directory {
-    use tempfile;
-    use fs_utils::copy::{copy_directory, destination_directory};
-    use std::path::{Path, PathBuf};
     use super::utils::fixture_at;
-    use std::os::unix::fs::PermissionsExt;
+    use fs_utils::copy::{copy_directory, destination_directory};
     use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+    use std::path::{Path, PathBuf};
+    use tempfile;
 
     #[test]
     fn it_returns_error_on_non_existing_source_directory() {
@@ -60,7 +60,8 @@ mod copy_directory {
                     .metadata()
                     .unwrap()
                     .permissions()
-                    .mode() & 0o111,
+                    .mode()
+                    & 0o111,
                 0o111
             );
         }
@@ -73,8 +74,8 @@ mod copy_directory {
 
 mod destination_directory {
     use fs_utils::copy::destination_directory;
-    use std::path::PathBuf;
     use std::env::current_dir;
+    use std::path::PathBuf;
 
     #[test]
     fn it_always_appends_the_filename_to_destination() {

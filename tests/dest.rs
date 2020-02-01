@@ -2,8 +2,8 @@ extern crate fs_utils;
 
 mod destination_directory {
     use fs_utils::copy::destination_directory;
-    use std::path::PathBuf;
     use std::env::set_current_dir;
+    use std::path::PathBuf;
 
     #[test]
     #[should_panic]
@@ -15,5 +15,4 @@ mod destination_directory {
             PathBuf::from("dest/fs-utils")
         );
     }
-
 }

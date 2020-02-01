@@ -1,7 +1,5 @@
 //! Functions to remove files and directories.
-use std::fs;
-use std::io;
-use std::path::Path;
+use std::{fs, io, path::Path};
 
 /// Cleans up the contents (files and folders) of the given folder while keeping the folder itself.
 ///

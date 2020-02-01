@@ -13,9 +13,9 @@ mod utils {
 }
 
 mod copy_directory {
-    use tempfile;
-    use fs_utils::{check, copy, remove};
     use super::utils::fixture_at;
+    use fs_utils::{check, copy, remove};
+    use tempfile;
 
     #[test]
     fn it_cleans_up_an_empty_folder() {
@@ -26,7 +26,10 @@ mod copy_directory {
 
     #[test]
     fn it_cleans_up_a_folder_with_nested_folders_and_files() {
-        let (source, dest) = (fixture_at("source-1"), tempfile::Builder::new().prefix("dest").tempdir().unwrap());
+        let (source, dest) = (
+            fixture_at("source-1"),
+            tempfile::Builder::new().prefix("dest").tempdir().unwrap(),
+        );
         let dest_path = copy::copy_directory(&source, dest.path()).unwrap();
 
         remove::cleanup_folder(&dest_path).unwrap();

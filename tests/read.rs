@@ -17,8 +17,8 @@ mod utils {
 }
 
 mod read {
-    use fs_utils::read;
     use super::utils::tmp_write;
+    use fs_utils::read;
 
     #[test]
     fn it_heads_bytes_from_a_file_smaller_than_the_limit() {

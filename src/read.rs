@@ -1,8 +1,9 @@
 //! Functions to read from files.
-use std;
-use std::fs;
-use std::io::{self, Read};
-use std::path::Path;
+use std::{
+    self, fs,
+    io::{self, Read},
+    path::Path,
+};
 
 /// Reads the first N bytes from a file.
 ///
@@ -19,8 +20,7 @@ pub fn head<P: AsRef<Path>>(path: P, limit: usize) -> io::Result<Vec<u8>> {
     } else {
         (limit, limit)
     };
-    let mut read_buffer = Vec::with_capacity(read_buffer_size);
-    read_buffer.resize(read_buffer_size, 0);
+    let mut read_buffer = vec![0; read_buffer_size];
     fs::File::open(&path)?.read_exact(&mut read_buffer[..read_limit])?;
     Ok(read_buffer)
 }

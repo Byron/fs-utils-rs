@@ -1,8 +1,9 @@
 //! Functions to copy files and directories from one place to another.
-use std::path::{Path, PathBuf};
-use std::io;
-use std::fs;
 use quick_error::ResultExt;
+use std::{
+    fs, io,
+    path::{Path, PathBuf},
+};
 
 struct SourceDirectory<'a>(&'a Path);
 
@@ -10,7 +11,7 @@ struct ObtainEntryIn<'a>(&'a Path);
 
 struct CreateDirectory<'a>(&'a Path);
 
-quick_error!{
+quick_error! {
     #[derive(Debug)]
     pub enum Error {
         CreateDirectory(p: PathBuf, err: io::Error) {
@@ -81,7 +82,7 @@ where
             if path.is_dir() {
                 visit_dirs(
                     &path,
-                    &dest.join(path.file_name().expect("should always have filename here"))
+                    &dest.join(path.file_name().expect("should always have filename here")),
                 )?;
             } else {
                 fs::create_dir_all(&dest).context(CreateDirectory(&dest))?;
