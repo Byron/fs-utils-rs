@@ -46,11 +46,10 @@ quick_error! {
 }
 
 /// Return the computed destination directory, given a source directory.
-pub fn destination_directory<P, O>(source_dir: P, destination_dir: O) -> PathBuf
-where
-    P: AsRef<Path>,
-    O: AsRef<Path>,
-{
+pub fn destination_directory(
+    source_dir: impl AsRef<Path>,
+    destination_dir: impl AsRef<Path>,
+) -> PathBuf {
     let source_dir = source_dir
         .as_ref()
         .canonicalize()
@@ -65,11 +64,10 @@ where
 /// It will not perform the copy operation if the effective destination directory does already exist.
 ///
 /// The returned value will contain a copied directory's path.
-pub fn copy_directory<P, O>(source_dir: P, destination_dir: O) -> Result<PathBuf, Error>
-where
-    P: AsRef<Path>,
-    O: AsRef<Path>,
-{
+pub fn copy_directory(
+    source_dir: impl AsRef<Path>,
+    destination_dir: impl AsRef<Path>,
+) -> Result<PathBuf, Error> {
     let dest = destination_directory(source_dir.as_ref(), destination_dir);
     if dest.is_dir() {
         return Err(Error::DestinationDirectoryExists(dest));

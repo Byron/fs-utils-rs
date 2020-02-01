@@ -8,7 +8,7 @@ use std::{
 /// Reads the first N bytes from a file.
 ///
 /// It is equivalent to `head -c limit` *nix utility.
-pub fn head<P: AsRef<Path>>(path: P, limit: usize) -> io::Result<Vec<u8>> {
+pub fn head(path: impl AsRef<Path>, limit: usize) -> io::Result<Vec<u8>> {
     let file_size = fs::metadata(&path)?.len();
     let file_size: usize = if file_size <= std::usize::MAX as u64 {
         file_size as usize
@@ -32,7 +32,7 @@ pub fn head<P: AsRef<Path>>(path: P, limit: usize) -> io::Result<Vec<u8>> {
 /// [here](https://doc.rust-lang.org/std/string/struct.string.html#method.from_utf8_lossy)).
 ///
 /// It is equivalent to `head -c limit` *nix utility.
-pub fn head_to_string<P: AsRef<Path>>(path: P, limit: usize) -> io::Result<String> {
+pub fn head_to_string(path: impl AsRef<Path>, limit: usize) -> io::Result<String> {
     Ok(String::from_utf8_lossy(&head(path, limit)?).into_owned())
 }
 
@@ -42,8 +42,8 @@ pub fn head_to_string<P: AsRef<Path>>(path: P, limit: usize) -> io::Result<Strin
 /// It assumes that the file is encoded with UTF-8, so any invalid UTF-8 sequences will be
 /// replaced with `U+FFFD REPLACEMENT CHARACTER`, which looks like this: �, learn more
 /// [here](https://doc.rust-lang.org/std/string/struct.string.html#method.from_utf8_lossy)).
-pub fn head_to_string_with_message<P: AsRef<Path>>(
-    path: P,
+pub fn head_to_string_with_message(
+    path: impl AsRef<Path>,
     limit: usize,
     truncation_message: &str,
 ) -> io::Result<String> {
