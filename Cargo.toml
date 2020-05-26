@@ -8,8 +8,8 @@ description = "Utilities to help working with the filesytem"
 documentation = "https://docs.rs/fs-utils"
 keywords = ["utility", "filesystem"]
 license = "MIT OR Apache-2.0"
-include = ["src/**/*.rs", "Cargo.toml"]
 readme = "README.md"
+include = ["src/**/*", "LICENSE-*", "README.md", "changelog.md"]
 
 [dependencies]
 quick-error = "1.2"
